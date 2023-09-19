@@ -1,0 +1,5 @@
+protobuf
+nltk
+pandas
+scikit-learn
+openpyxl
