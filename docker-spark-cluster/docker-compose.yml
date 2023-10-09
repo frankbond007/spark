@@ -1,0 +1,51 @@
+version: '3.8'
+volumes:
+  shared-volume:
+services:
+
+  master:
+    container_name: master
+    build:
+      context: .
+      dockerfile: Dockerfile.master
+    volumes:
+      - shared-volume:/spark-workspace
+    ports:
+      - "8080:8080"
+    environment:
+      - SPARK_MASTER=spark://master:7077
+    networks:
+      - spark_network
+
+  worker:
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    volumes:
+      - shared-volume:/spark-workspace
+    environment:
+      - SPARK_MASTER=spark://master:7077
+    networks:
+      - spark_network
+    depends_on:
+      - master
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: sparkdb
+    ports:
+      - "5432:5432"
+    networks:
+      - spark_network
+
+networks:
+  spark_network:
+    driver: bridge

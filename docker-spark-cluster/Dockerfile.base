@@ -1,0 +1,30 @@
+FROM ubuntu:20.04
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV SPARK_VERSION=3.1.2
+ENV HADOOP_VERSION=3.2
+ENV SPARK_HOME=/opt/spark
+
+# Install necessary software
+RUN apt-get update && apt-get install -y \
+    openjdk-11-jdk \
+    python3-pip \
+    vim \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+RUN echo "Etc/UTC" > /etc/timezone && \
+    apt-get update && apt-get install -y tzdata && \
+    dpkg-reconfigure -f noninteractive tzdata
+
+# Install Spark
+RUN curl -sL --retry 3 \
+  "https://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION.tgz" \
+  | gunzip \
+  | tar x -C /opt/ \
+ && mv /opt/spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION $SPARK_HOME \
+ && chown -R root:root $SPARK_HOME
+
+
+# Update PATH for Spark
+ENV PATH=$PATH:$SPARK_HOME/bin
