@@ -4,12 +4,3 @@ FROM spark_base:latest
 CMD ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.master.Master"]
 
 RUN apt install libmysqlclient-dev libssl-dev libkrb5-dev libsasl2-dev libffi-dev libpq-dev libldap2-dev -y
-
-RUN pip3 install pandas apache-airflow
-RUN pip3 install --upgrade Flask-WTF
-
-#RUN airflow db init
-
-#EXPOSE 8081
-
-#CMD ["airflow", "webserver", "--port", "8081"]
