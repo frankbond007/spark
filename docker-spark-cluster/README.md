@@ -6,4 +6,4 @@ docker build -t spark_base:latest .
 
 2. Run 
 
-docker-compose-up --build
+docker-compose up --build
